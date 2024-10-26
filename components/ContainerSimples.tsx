@@ -7,15 +7,13 @@ const ContainerSimples = ({ children }) => {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 5,
+        marginRight: 1,
+        marginVertical: 4,
         padding: 16,
         backgroundColor: '#FFFFFF',
-        borderRadius: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.5,
-        elevation: 5,
+        borderRadius: 5,
+        borderWidth: 1, 
+        borderColor: '#000000', 
     },
 });
 
