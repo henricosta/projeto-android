@@ -1,24 +1,49 @@
 import React, { useState, useContext } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, Alert, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import UserContext from '@/context/UserContext';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 
-function TelaLogin() {
-  const { users }: any = useContext(UserContext);
+// Validação de e-mail
+const isValidEmail = (email) => {
+  const regex = /\S+@\S+\.\S+/;
+  return regex.test(email);
+};
+
+// Validação de senha
+const isValidPassword = (senha) => {
+  return senha.length >= 6;
+};
+
+function TelaCadastro() {
+  const { users, setUsers }: any = useContext(UserContext);
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const login = () => {
-    const user = users.find((user) => user.email === email && user.senha === senha);
-
-    if (user) {
+  const cadastrar = async () => {
+    if (nome === '' || email === '' || senha === '') {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+    } else if (!isValidEmail(email)) {
+      Alert.alert('Erro', 'Por favor, insira um e-mail válido.');
+    } else if (!isValidPassword(senha)) {
+      Alert.alert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
+    } else {
+      // TODO: Salvar usuarios no banco de dados 
       setLoading(true);
+      const newUser = { nome, email, senha };
+      const updatedUsers = [...users, newUser];
+      setUsers(updatedUsers);
+
       setTimeout(() => {
         setLoading(false);
+        Alert.alert('Cadastro', 'Cadastro realizado com sucesso!', [
+          { text: 'OK', onPress: () => router.replace('/auth/login') },
+        ]);
+        setNome('');
+        setEmail('');
+        setSenha('');
       }, 2000);
-    } else {
-      Alert.alert('Erro', 'E-mail ou senha incorretos.');
     }
   };
 
@@ -27,16 +52,22 @@ function TelaLogin() {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Image
           source={{
-            uri: 'https://static.vecteezy.com/ti/vetor-gratis/t2/439863-icone-de-usuarios-de-gratis-vetor.jpg',
+            uri: 'https://cdn-icons-png.flaticon.com/512/9771/9771721.png',
           }}
           style={styles.image}
         />
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>Cadastro</Text>
 
         {loading ? (
           <ActivityIndicator size="large" color="#D32F2F" />
         ) : (
           <>
+            <TextInput
+              style={styles.input}
+              placeholder="Nome"
+              value={nome}
+              onChangeText={setNome}
+            />
             <TextInput
               style={styles.input}
               placeholder="E-mail"
@@ -51,16 +82,14 @@ function TelaLogin() {
               onChangeText={setSenha}
               secureTextEntry
             />
-            <TouchableOpacity style={styles.button} onPress={login}>
-              <Text style={styles.buttonText}>Entrar</Text>
+            <TouchableOpacity style={styles.button} onPress={cadastrar}>
+              <Text style={styles.buttonText}>Cadastrar</Text>
             </TouchableOpacity>
           </>
         )}
 
-        <Text style={styles.footerText}>
-          <Link href="/auth/cadastro">
-            Ainda não está cadastrado? <Text style={styles.signup}>Registre-se. </Text>
-          </Link>
+        <Text onPress={() => router.replace('/auth/login')} style={styles.footerText}>
+          Já está cadastrado? <Text style={styles.signup}>Faça login. </Text>
         </Text>
       </ScrollView>
     </SafeAreaView>
@@ -123,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TelaLogin;
+export default TelaCadastro;
