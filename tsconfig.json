@@ -4,6 +4,7 @@
     "noUnusedLocals": false,
     "noImplicitAny": false,
     "strict": true,
+    "allowJs": true,
     "paths": {
       "@/*": [
         "./*"
