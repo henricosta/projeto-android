@@ -25,6 +25,4 @@ export function UserProvider({ children }) {
   );
 }
 
-export const useUser = () => {
-  return useContext(UserContext);
-};
+export { UserContext };
