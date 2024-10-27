@@ -8,10 +8,10 @@ import BotaoFlutuante from '@/components/BotaoFlutuante';
 export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <LayoutBasicoComTitulo titulo={"Meus eventos"}>
+      <View style={{ margin: 8, flex: 1 }}>
         <ListaEventos listaEventos={data} />
         <BotaoFlutuante onPress={() => alert('pressed')} />
-      </LayoutBasicoComTitulo>
+      </View>
     </SafeAreaView>
   );
 }
