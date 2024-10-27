@@ -7,7 +7,7 @@ export default function ListaEventos({ listaEventos }) {
             data={listaEventos}
             keyExtractor={evento => evento.id}
             renderItem={({ item }) => (
-                <EventoListItem nome={item.nome} local={item.local} data={item.data} tipo={item.tipo} />
+                <EventoListItem id={item.id} nome={item.nome} local={item.local} data={item.data} tipo={item.tipo} />
             )}
         />
     )

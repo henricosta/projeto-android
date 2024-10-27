@@ -1,15 +1,20 @@
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import ContainerSimples from "./ContainerSimples"
+import { Href, Link } from "expo-router";
 
-const EventoListItem = ({ nome, local, data, tipo }) => {
+const EventoListItem = ({ id, nome, local, data, tipo }) => {
     const formattedDate = new Date(data).toLocaleString();
 
     return (
         <ContainerSimples>
-            <Text style={styles.title}>{nome}</Text>
-            <Text style={styles.description}>{local}</Text>
-            <Text style={styles.date}>{formattedDate}</Text>
-            <Text style={styles.tipo}>{tipo === 'presencial' ? 'Presencial' : 'Online'}</Text>
+            <Link href={`(app)/detalhes/${id}` as Href}>
+                <View>
+                    <Text style={styles.title}>{nome}</Text>
+                    <Text style={styles.description}>{local}</Text>
+                    <Text style={styles.date}>{formattedDate}</Text>
+                    <Text style={styles.tipo}>{tipo === 'presencial' ? 'Presencial' : 'Online'}</Text>
+                </View>
+            </Link>
         </ContainerSimples>
     );
 };
