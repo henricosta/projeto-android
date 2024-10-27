@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, Alert, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
-import UserContext from '@/context/UserContext';
+import { UserContext } from '@/context/UserContext';
 import { router } from 'expo-router';
 
 // Validação de e-mail
@@ -38,7 +38,7 @@ function TelaCadastro() {
       setTimeout(() => {
         setLoading(false);
         Alert.alert('Cadastro', 'Cadastro realizado com sucesso!', [
-          { text: 'OK', onPress: () => router.replace('/auth/login') },
+          { text: 'OK', onPress: () => router.replace('/login') },
         ]);
         setNome('');
         setEmail('');
@@ -88,7 +88,7 @@ function TelaCadastro() {
           </>
         )}
 
-        <Text onPress={() => router.replace('/auth/login')} style={styles.footerText}>
+        <Text onPress={() => router.replace('/login')} style={styles.footerText}>
           Já está cadastrado? <Text style={styles.signup}>Faça login. </Text>
         </Text>
       </ScrollView>

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, Alert, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
-import UserContext from '@/context/UserContext';
-import { Link, router } from 'expo-router';
+import { UserContext } from '@/context/UserContext';
+import { Href, Link, router } from 'expo-router';
 
 function TelaLogin() {
   const { users }: any = useContext(UserContext);
@@ -58,7 +58,7 @@ function TelaLogin() {
         )}
 
         <Text style={styles.footerText}>
-          <Link href="/auth/cadastro">
+          <Link href={"/cadastro" as Href}>
             Ainda não está cadastrado? <Text style={styles.signup}>Registre-se. </Text>
           </Link>
         </Text>
