@@ -1,4 +1,4 @@
-import { useSession } from "@/context/AuthContext";
+import { useSession } from "@/context/SessionContext";
 import { Href, Redirect, Stack } from "expo-router";
 import { Text } from "react-native";
 
