@@ -28,12 +28,23 @@ if not os.path.exists('./db.sqlite'):
             "location": str,
             'date': str,
             "is_online": bool,
+            'created_by': int,
         }, pk="id", not_null={'name', 'description', 'is_online'})
+        
+    if "user_event" not in db.table_names():
+        db['user_event'].create({
+            'id': int,
+            'user_id': int,
+            'event_id': int
+        }, pk="id", foreign_keys=[
+            ("user_id", "users", "id"),
+            ("event_id", "events", "id")
+        ])
 
-# Usa dados de seed se eles existirem
-# if os.path.exists('./seed.sql'):
-#     db = get_database()
-#     with open('./seed.sql') as file:
-#         sql_script = file.read()
 
-#     db.executescript(sql_script)
+if os.path.exists('./seed.sql'):
+    db = get_database()
+    with open('./seed.sql') as file:
+        sql_script = file.read()
+
+    db.executescript(sql_script)

@@ -2,6 +2,9 @@ import React, { useState, useContext } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, Alert, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import { UserContext } from '@/context/UserContext';
 import { router } from 'expo-router';
+import { useSession } from '@/context/SessionContext';
+import axios from 'axios';
+import API from '@/common/paths';
 
 // Validação de e-mail
 const isValidEmail = (email) => {
@@ -15,7 +18,7 @@ const isValidPassword = (senha) => {
 };
 
 function TelaCadastro() {
-  const { users, setUsers }: any = useContext(UserContext);
+  const { setSession } = useSession()
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -30,20 +33,34 @@ function TelaCadastro() {
       Alert.alert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
     } else {
       // TODO: Salvar usuarios no banco de dados 
-      setLoading(true);
-      const newUser = { nome, email, senha };
-      const updatedUsers = [...users, newUser];
-      setUsers(updatedUsers);
+      try {
+          setLoading(true);
+          const response: any = await axios.post(API.CADASTRAR_USUARIO, {
+            name: nome,
+            email: email,
+            password: senha
+          })
+          console.log(response)
+          setSession(response.data.user)
+          router.replace('/(app)/(tabs)/')
+        } catch (err: any) {
+          alert('error creating user:' + err.message)
+        } finally {
+          setLoading(false)
+        }
+      // const newUser = { nome, email, senha };
+      // const updatedUsers = [...users, newUser];
+      // setUsers(updatedUsers);
 
-      setTimeout(() => {
-        setLoading(false);
-        Alert.alert('Cadastro', 'Cadastro realizado com sucesso!', [
-          { text: 'OK', onPress: () => router.replace('/login') },
-        ]);
-        setNome('');
-        setEmail('');
-        setSenha('');
-      }, 2000);
+      // setTimeout(() => {
+      //   setLoading(false);
+      //   Alert.alert('Cadastro', 'Cadastro realizado com sucesso!', [
+      //     { text: 'OK', onPress: () => router.replace('/login') },
+      //   ]);
+      //   setNome('');
+      //   setEmail('');
+      //   setSenha('');
+      // }, 2000);
     }
   };
 

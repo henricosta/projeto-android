@@ -4,6 +4,7 @@ import { View, Text, TextInput, Button, StyleSheet, Switch } from 'react-native'
 import { router } from 'expo-router';
 import axios from 'axios';
 import API from '@/common/paths';
+import { useSession } from '@/context/SessionContext';
 
 const AdicionarEvento = () => {
     const [eventName, setEventName] = useState('');
@@ -14,6 +15,8 @@ const AdicionarEvento = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const { session } = useSession()
+
     const handleAddEvent = async () => {
         const eventData = {
             name: eventName,
@@ -21,6 +24,7 @@ const AdicionarEvento = () => {
             location: eventLocation,
             date: eventDate,
             is_online: isOnline,
+            created_by: session.id,
         };
 
         setLoading(true); // Start loading

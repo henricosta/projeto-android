@@ -1,12 +1,13 @@
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
-import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import API from '@/common/paths';
+import Mapa from '@/components/Mapa';
 
 const DetalhesEvento = () => {
-  const [loading, setLoading] = useState(true)
-  const [eventoResponse, setEventoResponse] = useState<any>(null)
+  const [loading, setLoading] = useState(true);
+  const [eventoResponse, setEventoResponse] = useState<any>(null);
   const { evento }: any = useLocalSearchParams();
 
   useEffect(() => {
@@ -15,9 +16,9 @@ const DetalhesEvento = () => {
       try {
         const response = await axios.get(API.GET_EVENTO_DETALHES.replace(':id', evento));
         setEventoResponse(response.data.event); // Assuming response.data contains the list of eventos
-        console.log(response.data.event)
+        console.log(response.data.event);
       } catch (err: any) {
-        alert(err)
+        alert(err);
       } finally {
         setLoading(false);
       }
@@ -30,14 +31,15 @@ const DetalhesEvento = () => {
     return (
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{eventoResponse.name}</Text>
-        <Text style={styles.description}>{eventoResponse.description}</Text>
         <Text style={styles.locality}>{eventoResponse.location}</Text>
+        <Text style={styles.descricaoTitulo}>Descricao</Text>
+        <Text style={styles.description}>{eventoResponse.description}</Text>
         <View style={styles.mapPlaceholder}>
-          <Text>Map Placeholder</Text>
+          {/* <Mapa /> */}
         </View>
       </View>
-    )
-  }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,6 +47,7 @@ const DetalhesEvento = () => {
     </SafeAreaView>
   );
 };
+// alice.johnson@example.com
 
 const styles = StyleSheet.create({
   container: {
@@ -52,9 +55,16 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f8f8f8',
   },
+  descricaoTitulo: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 3,
+  },
   detailsContainer: {
+    height: '100%',
     backgroundColor: '#fff',
     borderRadius: 8,
+    margin: 10, 
     padding: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -69,14 +79,15 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginBottom: 8,
+    marginBottom: 20,
   },
   locality: {
-    fontSize: 16,
+    fontSize: 12,
     marginBottom: 16,
   },
   mapPlaceholder: {
-    height: 200,
+    height: 400,
+    width: '100%', // Ensure the width is 100% of the parent container
     backgroundColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',

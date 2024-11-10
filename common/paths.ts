@@ -6,10 +6,12 @@ const API = {
     CREATE_EVENTO: `${BASE_PATH}/api/eventos/create`,
     DELETE_EVENTO: `${BASE_PATH}/api/eventos/delete`,
     UPDATE_EVENTO: `${BASE_PATH}/api/eventos/update`,
-    LISTAR_EVENTOS: `${BASE_PATH}/api/eventos/list?limit=10`,
+    LISTAR_EVENTOS: `${BASE_PATH}/api/eventos/list`,
     PESQUISAR_EVENTOS: `${BASE_PATH}/api/eventos/pesquisar`,
     LOGIN: `${BASE_PATH}/api/login`,
     LOGOUT: `${BASE_PATH}/api/logout`,
+    CADASTRAR_USUARIO: `${BASE_PATH}/api/cadastrar`,
+    PARTICIPAR_EVENTO: `${BASE_PATH}/api/participar-evento`
 };
 
 export default API;

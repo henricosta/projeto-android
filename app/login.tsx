@@ -2,25 +2,25 @@ import React, { useState, useContext } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, Alert, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import { UserContext } from '@/context/UserContext';
 import { Href, Link, router } from 'expo-router';
+import axios from 'axios';
+import API from '@/common/paths';
+import { useSession } from '@/context/SessionContext';
 
 function TelaLogin() {
-  const { users }: any = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const login = () => {
-    const user = users.find((user) => user.email === email && user.senha === senha);
+  const { login } = useSession();
 
-    if (user) {
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    } else {
-      Alert.alert('Erro', 'E-mail ou senha incorretos.');
-    }
-  };
+  const handleLogin = async () => {
+    setLoading(true)
+    login(email, senha, () => {
+      router.replace('/(app)/(tabs)/')
+    })
+    setLoading(false)
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -51,7 +51,7 @@ function TelaLogin() {
               onChangeText={setSenha}
               secureTextEntry
             />
-            <TouchableOpacity style={styles.button} onPress={login}>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
           </>

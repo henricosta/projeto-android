@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, CheckBox, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, CheckBox, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import API from '@/common/paths';
+import ListaEventos from '@/components/ListaEventos';
+import { useSession } from '@/context/SessionContext';
 
 export default function SearchScreen() {
   const [nome, setNome] = useState('');
@@ -12,6 +14,10 @@ export default function SearchScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [precisaRecarregar, setPrecisaRecarregar] = useState(false)
+
+  const { session } = useSession()
+
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -21,8 +27,10 @@ export default function SearchScreen() {
           local,
           is_online: isOnline,
           is_presencial: isPresencial,
+          user_id: session.id
         }
       });
+      console.log(response.data.events)
       setEventos(response.data.events);
     } catch (err) {
       setError(err.message);
@@ -31,10 +39,19 @@ export default function SearchScreen() {
     }
   };
 
+  useEffect(() => {
+    console.log('precisa recarregar')
+    if (precisaRecarregar) {
+      handleSearch();
+      setPrecisaRecarregar(false); // Reset to false after calling
+    }
+  }, [precisaRecarregar]);
+
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <Text style={styles.label}>Pesquisar por Nome</Text>
+      <View style={styles.formularioContainer}>
+        <Text style={styles.label}>Nome</Text>
         <TextInput
           style={styles.input}
           placeholder="Nome do Evento"
@@ -42,7 +59,7 @@ export default function SearchScreen() {
           onChangeText={setNome}
         />
 
-        <Text style={styles.label}>Pesquisar por Local</Text>
+        <Text style={styles.label}>Local</Text>
         <TextInput
           style={styles.input}
           placeholder="Local do Evento"
@@ -51,35 +68,74 @@ export default function SearchScreen() {
         />
 
         <View style={styles.checkboxContainer}>
-          <CheckBox value={isOnline} onValueChange={setIsOnline} />
-          <Text style={styles.label}>Online</Text>
-          <CheckBox value={isPresencial} onValueChange={setIsPresencial} />
-          <Text style={styles.label}>Presencial</Text>
-        </View>
-
-        <Button title="Pesquisar" onPress={handleSearch} />
-        
-        {loading && <Text>Carregando...</Text>}
-        {error && <Text>Erro: {error}</Text>}
-        
-        {eventos.length > 0 && (
-          <View style={styles.results}>
-            {eventos.map((evento, index) => (
-              <Text key={index} style={styles.eventItem}>{evento.name}</Text>
-            ))}
+          <View style={styles.checkboxItem}>
+            <CheckBox value={isOnline} onValueChange={setIsOnline} />
+            <Text style={styles.checkboxLabel}>Online</Text>
           </View>
-        )}
-      </ScrollView>
+          <View style={styles.checkboxItem}>
+            <CheckBox value={isPresencial} onValueChange={setIsPresencial} />
+            <Text style={styles.checkboxLabel}>Presencial</Text>
+          </View>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.botaoPesquisar} onPress={handleSearch}>
+        <Text style={styles.textoBotaoPesquisar}>Pesquisar</Text>
+      </TouchableOpacity>
+
+      {loading && <Text>Carregando...</Text>}
+      {error && <Text>Erro: {error}</Text>}
+
+      {eventos.length > 0 && (
+        <ScrollView style={{ paddingHorizontal: '10px', paddingVertical: '10px' }}>
+          <ListaEventos setPrecisaRecarregar={setPrecisaRecarregar} listaEventos={eventos} botaoParticipar={true} />
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 10 },
-  scrollView: { flexGrow: 1 },
-  input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingLeft: 8 },
-  label: { fontSize: 16, marginBottom: 5 },
-  checkboxContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  input: {
+    height: 40,
+    backgroundColor: 'white',
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 8
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontWeight: 'bold'
+  },
+  checkboxContainer: {
+    marginBottom: 10
+  },
+  checkboxItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 6,
+  },
+  checkboxLabel: {
+    marginLeft: 5,
+    fontSize: 16,
+  },
   results: { marginTop: 20 },
-  eventItem: { fontSize: 16, padding: 5 }
+  eventItem: { fontSize: 16, padding: 5 },
+  botaoPesquisar: {
+    padding: 15,
+    marginHorizontal: 10,
+    backgroundColor: '#1e293b'
+  },
+  textoBotaoPesquisar: {
+    color: 'white',
+    textAlign: 'center'
+  },
+  formularioContainer: {
+    marginHorizontal: 10,
+    paddingTop: 15,
+  }
 });
