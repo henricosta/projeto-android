@@ -1,4 +1,4 @@
-const BASE_PATH = 'http://localhost:5000';
+const BASE_PATH = process.env.API_URL || 'http://localhost:5000';
 
 const API = {
     GET_USUARIO: `${BASE_PATH}/api/user/:id`,

@@ -1,50 +1,100 @@
-# Welcome to your Expo app 👋
+Este projeto é uma aplicação mobile Expo com uma API backend Python Flask. Usamos Docker e docker-compose para rodar e gerenciar ambos os serviços em contêineres.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Pré-requisitos
 
-## Get started
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-1. Install dependencies
+## Estrutura do Projeto
 
-   ```bash
-   npm install
-   ```
+- `Dockerfile`: Configuração do contêiner para o projeto Expo (Node.js 20).
+- `Dockerfile.api`: Configuração do contêiner para a API (Python 3.8).
+- `docker-compose.yml`: Arquivo de configuração para rodar a aplicação Expo e a API em contêineres separados.
 
-2. Start the app
+## Configuração
 
-   ```bash
-    npx expo start
-   ```
+### Variáveis de Ambiente
 
-In the output, you'll find options to open the app in a
+A comunicação entre a aplicação Expo e a API usa a variável `API_URL` para definir o endpoint da API. Para garantir o correto funcionamento do projeto, o Docker Compose define automaticamente `API_URL` como `http://api:5000` dentro do contêiner Expo.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Como Rodar o Projeto
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Passo 1: Clone o Repositório
 
 ```bash
-npm run reset-project
+git clone <url-do-repositorio>
+cd <nome-do-repositorio>
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Passo 2: Rodar com Docker Compose
 
-## Learn more
+No diretório do projeto, execute:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+docker-compose up --build
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Esse comando irá:
+1. Construir as imagens Docker para o projeto Expo e a API.
+2. Rodar o contêiner da API.
+3. Rodar o contêiner do Expo, que iniciará a aplicação mobile.
 
-## Join the community
+> **Nota:** A API executa o arquivo `create_database.py` antes de iniciar para garantir que o banco de dados esteja configurado.
 
-Join our community of developers creating universal apps.
+### Passo 3: Acessar a Aplicação
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **API**: A API estará disponível na porta `5000` em `localhost:5000`.
+- **Expo**: A aplicação Expo estará disponível na porta `8081` em `localhost:8081`.
+
+Se estiver executando a API localmente e quer que a aplicação se comunique usando `localhost:5000`, é necessário configurar a variável `host.docker.internal`.
+
+
+## Solução de Problemas
+
+- **Erro de Conexão API**: Certifique-se de que a API está acessível no endereço definido em `API_URL`. Para contêineres em Docker Compose, `http://api:5000` deve funcionar.
+  
+- **Portas Ocupadas**: Se `8081` ou `5000` já estiverem em uso, altere as portas no `docker-compose.yml`.
+
+## Executar o projeto sem o Docker
+
+### Passo 1: Instalar Node.js e Python
+
+Certifique-se de ter o [Node.js 20](https://nodejs.org/) e o [Python 3.8](https://www.python.org/downloads/) instalados em sua máquina.
+
+### Passo 2: Configurar o Ambiente Python
+
+No diretório do projeto, crie um ambiente virtual e instale as dependências:
+```bash
+python -m venv venv
+source venv/bin/activate  # No Windows use `venv\Scripts\activate`
+pip install -r ./api/requirements.txt
+```
+
+### Passo 3: Configurar o Ambiente Node.js
+
+No diretório do projeto, instale as dependências do Node.js:
+```bash
+npm install
+```
+
+### Passo 4: Rodar o Banco de Dados
+
+Execute o script para criar o banco de dados:
+```bash
+python api/create_database.py
+```
+
+### Passo 5: Iniciar a API
+
+No diretório `api`, inicie a API:
+```bash
+python api.py
+```
+
+### Passo 6: Iniciar a Aplicação Expo
+
+No diretório do projeto, inicie a aplicação Expo:
+```bash
+npm run start
+```
+
